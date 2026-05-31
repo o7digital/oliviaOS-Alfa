@@ -11,32 +11,14 @@ export default function OliviaControlCenter() {
         <div className="absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-[#FF2F7D] opacity-5 blur-[140px]" />
       </div>
 
-      <section className="relative h-[90vh] min-h-[680px] overflow-hidden">
+      <section className="relative min-h-[900px] overflow-hidden lg:h-[95vh] lg:min-h-[760px]">
         <div className="absolute inset-0">
           <HeroSlider />
         </div>
-        <div className="absolute inset-0 bg-black/40" />
+        <div className="absolute inset-0 bg-black/55" />
 
-        <div className="relative z-10 flex h-full flex-col items-center justify-center px-6 text-center text-white lg:px-10">
-          <div className="mb-8 text-xs tracking-widest text-white/70 uppercase lg:text-sm">
-            o7 Relationship Operating System
-          </div>
-          <h1 className="text-6xl leading-[1.05] font-semibold tracking-tight lg:text-[90px]">
-            Olivia One
-          </h1>
-          <h2 className="mt-4 text-3xl font-light lg:text-4xl">Control Center</h2>
-          <p className="mx-auto mt-10 max-w-3xl text-lg leading-relaxed text-white/80 lg:text-xl">
-            Intelligence above communication. Structured relational infrastructure
-            for modern organizations.
-          </p>
-          <div className="mt-12 flex flex-col justify-center gap-4 sm:flex-row lg:mt-16 lg:gap-8">
-            <button className="rounded-full bg-white px-8 py-4 text-base font-medium text-black transition-all hover:opacity-90 lg:px-12 lg:py-6 lg:text-lg">
-              Launch Internal Pilot
-            </button>
-            <button className="rounded-full border border-white px-8 py-4 text-base font-medium text-white transition-all hover:bg-white/10 lg:px-12 lg:py-6 lg:text-lg">
-              Explore Ecosystem
-            </button>
-          </div>
+        <div className="relative z-10 flex min-h-[900px] items-center px-6 py-16 lg:h-full lg:min-h-0 lg:px-20 lg:py-0">
+          <LiveCognitiveDemo />
         </div>
       </section>
 
@@ -94,6 +76,95 @@ export default function OliviaControlCenter() {
           Enter Olivia One <ArrowRight size={20} />
         </button>
       </section>
+    </div>
+  );
+}
+
+function LiveCognitiveDemo() {
+  const [mode, setMode] = React.useState("business");
+  const [probability, setProbability] = React.useState(65);
+  const [momentum, setMomentum] = React.useState(2);
+  const [timeline, setTimeline] = React.useState<string[]>([]);
+
+  React.useEffect(() => {
+    const steps = [
+      "Signal detected: Legal review mentioned",
+      "Executive tone identified",
+      "Agreement stage detected",
+      "Closing probability recalculated",
+    ];
+    let stepIndex = 0;
+
+    const interval = setInterval(() => {
+      setProbability((previous) => Math.min(previous + 4, 87));
+      setMomentum((previous) => Math.min(previous + 3, 12));
+
+      if (stepIndex < steps.length) {
+        const nextStep = steps[stepIndex];
+        setTimeline((previous) => [...previous, nextStep]);
+        stepIndex += 1;
+      }
+    }, 1500);
+
+    return () => clearInterval(interval);
+  }, []);
+
+  return (
+    <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-2 lg:gap-20">
+      <div className="rounded-[32px] bg-white/95 p-7 text-black shadow-[0_40px_120px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:rounded-[40px] lg:p-10">
+        <div className="mb-4 text-xs tracking-widest text-gray-400 uppercase">
+          Incoming Email
+        </div>
+        <div className="mb-4 text-xl font-semibold">
+          Enterprise Contract Proposal
+        </div>
+        <p className="leading-relaxed text-gray-600">
+          We are ready to move forward pending final legal validation. Please send
+          the updated enterprise agreement by EOD.
+        </p>
+      </div>
+
+      <div className="text-white">
+        <div className="mb-4 text-xs tracking-widest text-gray-400 uppercase">
+          Live Cognitive Engine
+        </div>
+        <h1 className="mb-8 text-5xl font-semibold lg:text-6xl">Olivia One</h1>
+        <div className="mb-3 text-xl lg:text-2xl">
+          Closing Probability: {probability}%
+        </div>
+        <div className="mb-8 h-2 rounded-full bg-white/20">
+          <div
+            className="h-2 rounded-full bg-[#FF2F7D] transition-all duration-700"
+            style={{ width: `${probability}%` }}
+          />
+        </div>
+        <div className="mb-6">Momentum: +{momentum}%</div>
+        <div className="mb-8 min-h-24 space-y-2 text-sm">
+          {timeline.map((item) => (
+            <div key={item} className="text-[#FF2F7D]">
+              {item}
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 flex flex-wrap gap-3 lg:gap-4">
+          {["business", "human", "limited", "private"].map((candidate) => (
+            <button
+              key={candidate}
+              onClick={() => setMode(candidate)}
+              className={`rounded-full border px-4 py-2 text-sm transition-all lg:px-5 ${
+                mode === candidate
+                  ? "border-[#FF2F7D] bg-[#FF2F7D] text-white"
+                  : "border-white/30 text-white/60"
+              }`}
+            >
+              {candidate}
+            </button>
+          ))}
+        </div>
+        <div className="mt-4 text-sm text-gray-400">
+          Active Mode: <span className="text-white">{mode}</span>
+        </div>
+      </div>
     </div>
   );
 }
