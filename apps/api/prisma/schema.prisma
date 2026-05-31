@@ -1,0 +1,60 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id        String   @id @default(uuid())
+  name      String
+  users     User[]
+  threads   Thread[]
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id             String       @id @default(uuid())
+  clerkId        String       @unique
+  email          String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  deals          Deal[]
+  createdAt      DateTime     @default(now())
+}
+
+model Thread {
+  id             String       @id @default(uuid())
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id])
+  subject        String
+  messages       Message[]
+  deal           Deal?
+  createdAt      DateTime     @default(now())
+}
+
+model Message {
+  id          String   @id @default(uuid())
+  threadId    String
+  thread      Thread   @relation(fields: [threadId], references: [id])
+  from        String
+  to          String
+  body        String
+  stage       String?
+  probability Float?
+  createdAt   DateTime @default(now())
+}
+
+model Deal {
+  id            String   @id @default(uuid())
+  threadId      String   @unique
+  thread        Thread   @relation(fields: [threadId], references: [id])
+  valueEstimate Float?
+  probability   Float?
+  stage         String
+  ownerId       String?
+  owner         User?    @relation(fields: [ownerId], references: [id])
+  createdAt     DateTime @default(now())
+}
