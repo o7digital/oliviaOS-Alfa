@@ -15,7 +15,7 @@ export default function OliviaControlCenter() {
         <div className="absolute inset-0">
           <HeroSlider />
         </div>
-        <div className="absolute inset-0 bg-black/38" />
+        <div className="absolute inset-0 bg-black/55" />
 
         <div className="relative z-10 flex min-h-[900px] items-center px-6 py-16 lg:h-full lg:min-h-0 lg:px-20 lg:py-0">
           <LiveCognitiveDemo />
@@ -110,8 +110,8 @@ function LiveCognitiveDemo() {
   }, []);
 
   return (
-    <div className="mx-auto grid w-full max-w-7xl overflow-hidden rounded-[32px] border border-white/35 bg-white/6 text-slate-950 shadow-[0_40px_120px_rgba(0,0,0,0.38)] lg:grid-cols-[0.95fr_1fr] lg:rounded-[40px]">
-      <div className="bg-white/90 p-7 text-black lg:min-h-[440px] lg:p-10">
+    <div className="mx-auto grid w-full max-w-7xl gap-10 lg:grid-cols-2 lg:gap-20">
+      <div className="rounded-[32px] bg-white/95 p-7 text-black shadow-[0_40px_120px_rgba(0,0,0,0.5)] backdrop-blur-xl lg:rounded-[40px] lg:p-10">
         <div className="mb-4 text-xs tracking-widest text-gray-400 uppercase">
           Incoming Email
         </div>
@@ -124,15 +124,15 @@ function LiveCognitiveDemo() {
         </p>
       </div>
 
-      <div className="border-t border-white/35 bg-white/6 p-7 lg:border-t-0 lg:border-l lg:p-10">
-        <div className="mb-4 text-xs tracking-widest text-slate-600 uppercase">
+      <div className="rounded-[32px] border border-white/45 bg-white/72 p-7 text-slate-950 shadow-[0_40px_120px_rgba(0,0,0,0.28)] backdrop-blur-2xl lg:rounded-[40px] lg:p-10">
+        <div className="mb-4 text-xs tracking-widest text-slate-500 uppercase">
           Live Cognitive Engine
         </div>
         <h1 className="mb-8 text-5xl font-semibold lg:text-6xl">Olivia One</h1>
         <div className="mb-3 text-xl lg:text-2xl">
           Closing Probability: {probability}%
         </div>
-        <div className="mb-8 h-2 rounded-full bg-slate-900/12">
+        <div className="mb-8 h-2 rounded-full bg-slate-900/10">
           <div
             className="h-2 rounded-full bg-[#FF2F7D] transition-all duration-700"
             style={{ width: `${probability}%` }}
@@ -154,15 +154,15 @@ function LiveCognitiveDemo() {
               className={`rounded-full border px-4 py-2 text-sm transition-all lg:px-5 ${
                 mode === candidate
                   ? "border-[#FF2F7D] bg-[#FF2F7D] text-white"
-                  : "border-white/45 bg-white/35 text-slate-600 hover:border-white/70 hover:text-slate-800"
+                  : "border-slate-300/80 bg-white/40 text-slate-500 hover:border-slate-400 hover:text-slate-700"
               }`}
             >
               {candidate}
             </button>
           ))}
         </div>
-        <div className="mt-4 text-sm text-slate-600">
-          Active Mode: <span className="font-medium text-slate-950">{mode}</span>
+        <div className="mt-4 text-sm text-slate-500">
+          Active Mode: <span className="font-medium text-slate-900">{mode}</span>
         </div>
       </div>
     </div>
