@@ -10,7 +10,44 @@ import {
   ArrowUpRight,
 } from "lucide-react";
 
-type Context = "business" | "human" | "mixed";
+type Context = "business" | "human" | "limited" | "private";
+
+const modes: {
+  id: Context;
+  label: string;
+  dotClass: string;
+  activeClass: string;
+  reminder: string;
+}[] = [
+  {
+    id: "business",
+    label: "Business",
+    dotClass: "bg-emerald-500",
+    activeClass: "border-emerald-200 bg-emerald-50 text-emerald-700",
+    reminder: "Olivia Active (business)",
+  },
+  {
+    id: "human",
+    label: "Human",
+    dotClass: "bg-purple-500",
+    activeClass: "border-purple-200 bg-purple-50 text-purple-700",
+    reminder: "Olivia Human Layer Active",
+  },
+  {
+    id: "limited",
+    label: "Limited",
+    dotClass: "bg-amber-400",
+    activeClass: "border-amber-200 bg-amber-50 text-amber-700",
+    reminder: "Analyse limitée",
+  },
+  {
+    id: "private",
+    label: "Private",
+    dotClass: "bg-rose-500",
+    activeClass: "border-rose-200 bg-rose-50 text-rose-700",
+    reminder: "Confidentialité maximale",
+  },
+];
 
 type MailItem = {
   from: string;
@@ -40,9 +77,7 @@ type MailItem = {
 export default function OliviaOne() {
   const [selectedMail, setSelectedMail] = useState(0);
   const [focusMode, setFocusMode] = useState(false);
-  const [detectedContext] = useState<Context>("business");
-  const [manualOverride, setManualOverride] = useState<Context | null>(null);
-  const effectiveContext = manualOverride ?? detectedContext;
+  const [activeMode, setActiveMode] = useState<Context>("business");
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -84,26 +119,34 @@ export default function OliviaOne() {
   const current = mails[selectedMail];
 
   const themeClass = useMemo(() => {
-    if (effectiveContext === "business") {
+    if (activeMode === "business") {
       return "bg-gradient-to-br from-[#f6f8fc] via-[#eef2f9] to-[#e8edf6]";
     }
-    if (effectiveContext === "human") {
+    if (activeMode === "human") {
       return "bg-gradient-to-br from-[#faf5ff] via-[#f3e8ff] to-[#ede9fe]";
     }
-    return "bg-gradient-to-br from-[#fef9f3] via-[#fef3c7] to-[#fde68a]";
-  }, [effectiveContext]);
+    if (activeMode === "limited") {
+      return "bg-gradient-to-br from-[#fefcf5] via-[#fef8e7] to-[#f9edc8]";
+    }
+    return "bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]";
+  }, [activeMode]);
 
   const highlightBody = (text: string) => {
-    if (effectiveContext === "business") {
+    if (activeMode === "business") {
       return text
         .replace("move forward", "🟢 move forward")
         .replace("pending final pricing validation", "⚠️ pending final pricing validation");
     }
-    if (effectiveContext === "human") {
+    if (activeMode === "human") {
       return `💬 Tone detected: Direct / Low emotion\n\n${text}`;
     }
-    return `⚖️ Mixed Context Detected\n\n${text}`;
+    if (activeMode === "limited") {
+      return `⚠️ Limited analysis enabled\n\n${text}`;
+    }
+    return `🔒 Private mode enabled\n\n${text}`;
   };
+
+  const currentMode = modes.find((mode) => mode.id === activeMode) ?? modes[0];
 
   return (
     <div
@@ -126,18 +169,20 @@ export default function OliviaOne() {
         </div>
 
         <div className="flex items-center gap-4">
-          <div className="flex gap-2 text-xs">
-            {(["business", "human", "mixed"] as const).map((mode) => (
+          <div className="flex items-center gap-2 rounded-full border border-white/70 bg-white/55 p-1.5 text-xs shadow-sm backdrop-blur-xl">
+            {modes.map((mode) => (
               <button
-                key={mode}
-                onClick={() => setManualOverride(manualOverride === mode ? null : mode)}
-                className={`rounded-full px-3 py-1 transition-all ${
-                  effectiveContext === mode
-                    ? "bg-indigo-600 text-white"
-                    : "bg-white/70 text-slate-600"
+                key={mode.id}
+                onClick={() => setActiveMode(mode.id)}
+                aria-pressed={activeMode === mode.id}
+                className={`flex items-center gap-2 rounded-full border px-3 py-1.5 transition-all ${
+                  activeMode === mode.id
+                    ? `${mode.activeClass} shadow-sm`
+                    : "border-transparent bg-white/55 text-slate-600 hover:bg-white"
                 }`}
               >
-                {mode}
+                <span className={`h-2 w-2 rounded-full ${mode.dotClass}`} />
+                {mode.label}
               </button>
             ))}
           </div>
@@ -197,7 +242,25 @@ export default function OliviaOne() {
           className="w-[460px] overflow-y-auto bg-white/60 px-12 py-14 shadow-[0_50px_120px_rgba(0,0,0,0.1)] backdrop-blur-3xl"
         >
           <div className="space-y-12">
-            {effectiveContext !== "human" && (
+            <div>
+              <div className="mb-3 text-xs font-medium tracking-widest text-slate-400 uppercase">
+                Active mode
+              </div>
+              <div
+                className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium ${currentMode.activeClass}`}
+              >
+                <span className={`h-2.5 w-2.5 rounded-full ${currentMode.dotClass}`} />
+                {currentMode.reminder}
+              </div>
+            </div>
+
+            {activeMode === "private" ? (
+              <div className="rounded-2xl border border-rose-100 bg-white/55 p-5 text-sm leading-relaxed text-slate-600">
+                Detailed intelligence is hidden while maximum privacy is active.
+              </div>
+            ) : (
+              <>
+            {activeMode !== "human" && (
               <div>
                 <div className="mb-4 flex items-center gap-3 text-sm font-medium">
                   <TrendingUp size={16} /> Revenue Engine
@@ -217,7 +280,7 @@ export default function OliviaOne() {
               </div>
             )}
 
-            {effectiveContext !== "business" && (
+            {activeMode === "human" && (
               <div>
                 <div className="mb-4 flex items-center gap-3 text-sm font-medium">
                   <Users size={16} /> Human Signal
@@ -231,6 +294,7 @@ export default function OliviaOne() {
               </div>
             )}
 
+            {activeMode !== "limited" && (
             <div>
               <div className="mb-6 flex items-center gap-3 text-sm font-medium">
                 <Activity size={16} /> Evolution
@@ -247,6 +311,9 @@ export default function OliviaOne() {
                 ))}
               </div>
             </div>
+            )}
+              </>
+            )}
           </div>
         </motion.div>
       </div>
