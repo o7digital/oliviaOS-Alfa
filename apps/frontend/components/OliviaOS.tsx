@@ -8,6 +8,8 @@ import {
   Users,
   AlertTriangle,
   ArrowUpRight,
+  Menu,
+  X,
 } from "lucide-react";
 
 type Context = "business" | "human" | "limited" | "private";
@@ -78,6 +80,7 @@ export default function OliviaOne() {
   const [selectedMail, setSelectedMail] = useState(0);
   const [focusMode, setFocusMode] = useState(false);
   const [activeMode, setActiveMode] = useState<Context>("business");
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -158,17 +161,19 @@ export default function OliviaOne() {
         x.set(event.clientX - rect.width / 2);
         y.set(event.clientY - rect.height / 2);
       }}
-      className={`h-screen overflow-hidden ${themeClass} text-[#0f172a]`}
+      className={`min-h-screen overflow-x-hidden ${themeClass} text-[#0f172a] lg:h-screen lg:overflow-hidden`}
     >
-      <div className="flex items-center justify-between border-b border-white/40 bg-white/50 px-10 py-6 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-3xl">
+      <div className="relative z-20 flex items-center justify-between border-b border-white/40 bg-white/50 px-5 py-4 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-3xl lg:px-10 lg:py-6">
         <div>
-          <div className="text-2xl font-semibold tracking-tight">o7 Olivia One</div>
-          <div className="text-xs tracking-widest text-slate-500 uppercase">
+          <div className="text-xl font-semibold tracking-tight lg:text-2xl">
+            o7 Olivia One
+          </div>
+          <div className="text-[10px] tracking-widest text-slate-500 uppercase lg:text-xs">
             Relationship Operating System
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="hidden items-center gap-4 lg:flex">
           <div className="flex items-center gap-2 rounded-full border border-white/70 bg-white/55 p-1.5 text-xs shadow-sm backdrop-blur-xl">
             {modes.map((mode) => (
               <button
@@ -194,13 +199,56 @@ export default function OliviaOne() {
             {focusMode ? "Exit Focus" : "Ultra Focus"}
           </button>
         </div>
+
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={mobileMenuOpen}
+          className="rounded-full border border-white/70 bg-white/70 p-2.5 text-slate-700 shadow-sm backdrop-blur lg:hidden"
+        >
+          {mobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
       </div>
 
-      <div className="flex h-[calc(100vh-88px)]">
+      {mobileMenuOpen && (
+        <div className="relative z-10 border-b border-white/50 bg-white/75 px-5 py-4 shadow-lg backdrop-blur-2xl lg:hidden">
+          <div className="grid grid-cols-2 gap-2">
+            {modes.map((mode) => (
+              <button
+                key={mode.id}
+                onClick={() => {
+                  setActiveMode(mode.id);
+                  setMobileMenuOpen(false);
+                }}
+                aria-pressed={activeMode === mode.id}
+                className={`flex items-center gap-2 rounded-xl border px-3 py-2.5 text-xs font-medium transition-all ${
+                  activeMode === mode.id
+                    ? mode.activeClass
+                    : "border-white/80 bg-white/65 text-slate-600"
+                }`}
+              >
+                <span className={`h-2 w-2 rounded-full ${mode.dotClass}`} />
+                {mode.label}
+              </button>
+            ))}
+          </div>
+          <button
+            onClick={() => {
+              setFocusMode(!focusMode);
+              setMobileMenuOpen(false);
+            }}
+            className="mt-3 w-full rounded-xl border border-white/80 bg-white/70 px-4 py-2.5 text-xs font-medium text-slate-700 shadow-sm"
+          >
+            {focusMode ? "Exit Focus" : "Ultra Focus"}
+          </button>
+        </div>
+      )}
+
+      <div className="flex flex-col lg:h-[calc(100vh-88px)] lg:flex-row">
         {!focusMode && (
           <motion.div
             style={{ rotateX, rotateY }}
-            className="w-80 space-y-4 border-r border-white/40 bg-white/60 p-6 shadow-[0_30px_80px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
+            className="w-full space-y-4 border-b border-white/40 bg-white/60 p-5 shadow-[0_30px_80px_rgba(0,0,0,0.08)] backdrop-blur-2xl lg:w-80 lg:border-r lg:border-b-0 lg:p-6"
           >
             {mails.map((mail, index) => (
               <motion.div
@@ -224,9 +272,9 @@ export default function OliviaOne() {
         <motion.div
           layout
           style={{ rotateX, rotateY }}
-          className="flex-1 whitespace-pre-line border-r border-white/40 bg-white/60 px-16 py-14 shadow-[0_40px_100px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
+          className="min-h-[340px] flex-1 whitespace-pre-line border-b border-white/40 bg-white/60 px-5 py-8 shadow-[0_40px_100px_rgba(0,0,0,0.08)] backdrop-blur-2xl lg:border-r lg:border-b-0 lg:px-16 lg:py-14"
         >
-          <div className="mb-6 text-4xl font-semibold tracking-tight">
+          <div className="mb-5 text-3xl font-semibold tracking-tight lg:mb-6 lg:text-4xl">
             {current.subject}
           </div>
           <div className="mb-10 text-sm text-slate-500">
@@ -239,7 +287,7 @@ export default function OliviaOne() {
 
         <motion.div
           style={{ rotateX, rotateY }}
-          className="w-[460px] overflow-y-auto bg-white/60 px-12 py-14 shadow-[0_50px_120px_rgba(0,0,0,0.1)] backdrop-blur-3xl"
+          className="w-full overflow-y-auto bg-white/60 px-5 py-8 shadow-[0_50px_120px_rgba(0,0,0,0.1)] backdrop-blur-3xl lg:w-[460px] lg:px-12 lg:py-14"
         >
           <div className="space-y-12">
             <div>
