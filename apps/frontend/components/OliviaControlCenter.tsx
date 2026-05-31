@@ -110,23 +110,23 @@ function LiveCognitiveDemo() {
 
   return (
     <div className="flex w-full justify-center">
-      <div className="w-full max-w-6xl rounded-[36px] border border-white/20 bg-white/10 p-7 text-white shadow-[0_50px_150px_rgba(0,0,0,0.6)] backdrop-blur-2xl lg:w-[85%] lg:rounded-[50px] lg:p-16">
-        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
-          <div>
-            <div className="mb-4 text-xs tracking-widest text-white/50 uppercase">
+      <div className="w-full max-w-6xl rounded-[36px] border border-white/25 bg-black/18 p-7 text-white shadow-[0_45px_130px_rgba(0,0,0,0.42)] backdrop-blur-[2px] lg:w-[85%] lg:rounded-[50px] lg:p-16">
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-0">
+          <div className="lg:pr-14">
+            <div className="mb-4 text-xs tracking-widest text-white/65 uppercase">
               Incoming Email
             </div>
-            <div className="mb-4 text-2xl font-semibold">
+            <div className="mb-4 text-2xl font-semibold text-white">
               Enterprise Contract Proposal
             </div>
-            <p className="leading-relaxed text-white/80">
+            <p className="leading-relaxed text-white/85">
               We are ready to move forward pending final legal validation. Please
               send the updated enterprise agreement by EOD.
             </p>
           </div>
 
-          <div>
-            <div className="mb-6 text-sm tracking-widest text-white/50 uppercase">
+          <div className="border-t border-white/20 pt-10 lg:border-t-0 lg:border-l lg:pt-0 lg:pl-14">
+            <div className="mb-6 text-sm tracking-widest text-white/65 uppercase">
               Live Cognitive Engine
             </div>
             <div className="mb-4 text-3xl font-semibold">
@@ -154,7 +154,7 @@ function LiveCognitiveDemo() {
                   className={`rounded-full border px-5 py-2 text-sm transition-all ${
                     mode === candidate
                       ? "border-[#FF2F7D] bg-[#FF2F7D] text-white"
-                      : "border-white/30 text-white/60 hover:border-white/50 hover:text-white"
+                      : "border-white/35 bg-black/10 text-white/70 hover:border-white/60 hover:text-white"
                   }`}
                 >
                   {candidate}
