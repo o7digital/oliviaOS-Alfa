@@ -100,7 +100,8 @@ function LiveCognitiveDemo() {
       setMomentum((prev) => Math.min(prev + 2, 12));
 
       if (i < steps.length) {
-        setTimeline((prev) => [...prev, steps[i]]);
+        const nextStep = steps[i];
+        setTimeline((prev) => [...prev, nextStep]);
         i += 1;
       }
     }, 1500);
@@ -140,8 +141,8 @@ function LiveCognitiveDemo() {
             </div>
             <div className="mb-6">Momentum: +{momentum}%</div>
             <div className="mb-8 min-h-24 space-y-2 text-sm">
-              {timeline.map((item) => (
-                <div key={item} className="text-[#FF2F7D]">
+              {timeline.map((item, index) => (
+                <div key={`${item}-${index}`} className="text-[#FF2F7D]">
                   {item}
                 </div>
               ))}
