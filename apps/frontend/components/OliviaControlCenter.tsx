@@ -124,15 +124,15 @@ function LiveCognitiveDemo() {
         </p>
       </div>
 
-      <div className="text-white">
-        <div className="mb-4 text-xs tracking-widest text-gray-400 uppercase">
+      <div className="rounded-[32px] border border-white/45 bg-white/72 p-7 text-slate-950 shadow-[0_40px_120px_rgba(0,0,0,0.28)] backdrop-blur-2xl lg:rounded-[40px] lg:p-10">
+        <div className="mb-4 text-xs tracking-widest text-slate-500 uppercase">
           Live Cognitive Engine
         </div>
         <h1 className="mb-8 text-5xl font-semibold lg:text-6xl">Olivia One</h1>
         <div className="mb-3 text-xl lg:text-2xl">
           Closing Probability: {probability}%
         </div>
-        <div className="mb-8 h-2 rounded-full bg-white/20">
+        <div className="mb-8 h-2 rounded-full bg-slate-900/10">
           <div
             className="h-2 rounded-full bg-[#FF2F7D] transition-all duration-700"
             style={{ width: `${probability}%` }}
@@ -141,7 +141,7 @@ function LiveCognitiveDemo() {
         <div className="mb-6">Momentum: +{momentum}%</div>
         <div className="mb-8 min-h-24 space-y-2 text-sm">
           {timeline.map((item) => (
-            <div key={item} className="text-[#FF2F7D]">
+            <div key={item} className="font-medium text-[#FF2F7D]">
               {item}
             </div>
           ))}
@@ -154,15 +154,15 @@ function LiveCognitiveDemo() {
               className={`rounded-full border px-4 py-2 text-sm transition-all lg:px-5 ${
                 mode === candidate
                   ? "border-[#FF2F7D] bg-[#FF2F7D] text-white"
-                  : "border-white/30 text-white/60"
+                  : "border-slate-300/80 bg-white/40 text-slate-500 hover:border-slate-400 hover:text-slate-700"
               }`}
             >
               {candidate}
             </button>
           ))}
         </div>
-        <div className="mt-4 text-sm text-gray-400">
-          Active Mode: <span className="text-white">{mode}</span>
+        <div className="mt-4 text-sm text-slate-500">
+          Active Mode: <span className="font-medium text-slate-900">{mode}</span>
         </div>
       </div>
     </div>
