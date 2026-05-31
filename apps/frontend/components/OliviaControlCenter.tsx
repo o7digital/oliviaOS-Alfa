@@ -170,7 +170,7 @@ function LiveCognitiveDemo() {
 }
 
 function HeroSlider() {
-  const slides = ["/hero/hero1.png", "/hero/hero2.png", "/hero/hero3.png"];
+  const slides = ["/hero/hero1.webp", "/hero/hero2.webp", "/hero/hero3.webp"];
   const [index, setIndex] = React.useState(0);
 
   React.useEffect(() => {
