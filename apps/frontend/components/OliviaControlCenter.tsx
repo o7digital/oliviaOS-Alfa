@@ -82,27 +82,26 @@ export default function OliviaControlCenter() {
 
 function LiveCognitiveDemo() {
   const [mode, setMode] = React.useState("business");
-  const [probability, setProbability] = React.useState(65);
-  const [momentum, setMomentum] = React.useState(2);
+  const [probability, setProbability] = React.useState(70);
+  const [momentum, setMomentum] = React.useState(3);
   const [timeline, setTimeline] = React.useState<string[]>([]);
 
   React.useEffect(() => {
     const steps = [
-      "Signal detected: Legal review mentioned",
+      "Legal review detected",
       "Executive tone identified",
-      "Agreement stage detected",
+      "Agreement stage confirmed",
       "Closing probability recalculated",
     ];
-    let stepIndex = 0;
+    let i = 0;
 
     const interval = setInterval(() => {
-      setProbability((previous) => Math.min(previous + 4, 87));
-      setMomentum((previous) => Math.min(previous + 3, 12));
+      setProbability((prev) => Math.min(prev + 4, 87));
+      setMomentum((prev) => Math.min(prev + 2, 12));
 
-      if (stepIndex < steps.length) {
-        const nextStep = steps[stepIndex];
-        setTimeline((previous) => [...previous, nextStep]);
-        stepIndex += 1;
+      if (i < steps.length) {
+        setTimeline((prev) => [...prev, steps[i]]);
+        i += 1;
       }
     }, 1500);
 
@@ -110,59 +109,62 @@ function LiveCognitiveDemo() {
   }, []);
 
   return (
-    <div className="mx-auto grid w-full max-w-7xl overflow-hidden rounded-[32px] border border-white/35 bg-white/6 text-slate-950 shadow-[0_40px_120px_rgba(0,0,0,0.38)] lg:grid-cols-[0.95fr_1fr] lg:rounded-[40px]">
-      <div className="bg-white/90 p-7 text-black lg:min-h-[440px] lg:p-10">
-        <div className="mb-4 text-xs tracking-widest text-gray-400 uppercase">
-          Incoming Email
-        </div>
-        <div className="mb-4 text-xl font-semibold">
-          Enterprise Contract Proposal
-        </div>
-        <p className="leading-relaxed text-gray-600">
-          We are ready to move forward pending final legal validation. Please send
-          the updated enterprise agreement by EOD.
-        </p>
-      </div>
-
-      <div className="border-t border-white/35 bg-white/6 p-7 lg:border-t-0 lg:border-l lg:p-10">
-        <div className="mb-4 text-xs tracking-widest text-slate-600 uppercase">
-          Live Cognitive Engine
-        </div>
-        <h1 className="mb-8 text-5xl font-semibold lg:text-6xl">Olivia One</h1>
-        <div className="mb-3 text-xl lg:text-2xl">
-          Closing Probability: {probability}%
-        </div>
-        <div className="mb-8 h-2 rounded-full bg-slate-900/12">
-          <div
-            className="h-2 rounded-full bg-[#FF2F7D] transition-all duration-700"
-            style={{ width: `${probability}%` }}
-          />
-        </div>
-        <div className="mb-6">Momentum: +{momentum}%</div>
-        <div className="mb-8 min-h-24 space-y-2 text-sm">
-          {timeline.map((item) => (
-            <div key={item} className="font-medium text-[#FF2F7D]">
-              {item}
+    <div className="flex w-full justify-center">
+      <div className="w-full max-w-6xl rounded-[36px] border border-white/20 bg-white/10 p-7 text-white shadow-[0_50px_150px_rgba(0,0,0,0.6)] backdrop-blur-2xl lg:w-[85%] lg:rounded-[50px] lg:p-16">
+        <div className="grid gap-10 lg:grid-cols-2 lg:gap-16">
+          <div>
+            <div className="mb-4 text-xs tracking-widest text-white/50 uppercase">
+              Incoming Email
             </div>
-          ))}
-        </div>
-        <div className="mt-6 flex flex-wrap gap-3 lg:gap-4">
-          {["business", "human", "limited", "private"].map((candidate) => (
-            <button
-              key={candidate}
-              onClick={() => setMode(candidate)}
-              className={`rounded-full border px-4 py-2 text-sm transition-all lg:px-5 ${
-                mode === candidate
-                  ? "border-[#FF2F7D] bg-[#FF2F7D] text-white"
-                  : "border-white/45 bg-white/35 text-slate-600 hover:border-white/70 hover:text-slate-800"
-              }`}
-            >
-              {candidate}
-            </button>
-          ))}
-        </div>
-        <div className="mt-4 text-sm text-slate-600">
-          Active Mode: <span className="font-medium text-slate-950">{mode}</span>
+            <div className="mb-4 text-2xl font-semibold">
+              Enterprise Contract Proposal
+            </div>
+            <p className="leading-relaxed text-white/80">
+              We are ready to move forward pending final legal validation. Please
+              send the updated enterprise agreement by EOD.
+            </p>
+          </div>
+
+          <div>
+            <div className="mb-6 text-sm tracking-widest text-white/50 uppercase">
+              Live Cognitive Engine
+            </div>
+            <div className="mb-4 text-3xl font-semibold">
+              Closing Probability: {probability}%
+            </div>
+            <div className="mb-6 h-2 rounded-full bg-white/20">
+              <div
+                className="h-2 rounded-full bg-[#FF2F7D] transition-all duration-700"
+                style={{ width: `${probability}%` }}
+              />
+            </div>
+            <div className="mb-6">Momentum: +{momentum}%</div>
+            <div className="mb-8 min-h-24 space-y-2 text-sm">
+              {timeline.map((item) => (
+                <div key={item} className="text-[#FF2F7D]">
+                  {item}
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap gap-4">
+              {["business", "human", "limited", "private"].map((candidate) => (
+                <button
+                  key={candidate}
+                  onClick={() => setMode(candidate)}
+                  className={`rounded-full border px-5 py-2 text-sm transition-all ${
+                    mode === candidate
+                      ? "border-[#FF2F7D] bg-[#FF2F7D] text-white"
+                      : "border-white/30 text-white/60 hover:border-white/50 hover:text-white"
+                  }`}
+                >
+                  {candidate}
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 text-sm text-white/50">
+              Active Mode: <span className="text-white">{mode}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>
