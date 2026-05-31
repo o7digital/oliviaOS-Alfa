@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import OliviaControlCenter from "@/components/OliviaControlCenter";
 
 export default function Home() {
-  redirect("/inbox");
+  return <OliviaControlCenter />;
 }
