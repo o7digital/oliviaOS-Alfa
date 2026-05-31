@@ -1,22 +1,16 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import {
   TrendingUp,
   Activity,
-  BrainCircuit,
   Users,
   AlertTriangle,
   ArrowUpRight,
-  ArrowDownRight,
 } from "lucide-react";
 
-type TimelineEvent = {
-  label: string;
-  detail: string;
-  impact: "neutral" | "positive" | "risk" | "strong";
-};
+type Context = "business" | "human" | "mixed";
 
 type MailItem = {
   from: string;
@@ -29,7 +23,11 @@ type MailItem = {
   momentum: "up" | "down";
   riskLevel: "low" | "medium" | "high";
   scoreEvolution: number[];
-  timeline: TimelineEvent[];
+  timeline: {
+    label: string;
+    detail: string;
+    impact: "neutral" | "positive" | "risk" | "strong";
+  }[];
   enterprise: string[];
   userProfile: {
     role: string;
@@ -42,6 +40,9 @@ type MailItem = {
 export default function OliviaOne() {
   const [selectedMail, setSelectedMail] = useState(0);
   const [focusMode, setFocusMode] = useState(false);
+  const [detectedContext] = useState<Context>("business");
+  const [manualOverride, setManualOverride] = useState<Context | null>(null);
+  const effectiveContext = manualOverride ?? detectedContext;
   const containerRef = useRef<HTMLDivElement>(null);
   const x = useMotionValue(0);
   const y = useMotionValue(0);
@@ -82,43 +83,26 @@ export default function OliviaOne() {
 
   const current = mails[selectedMail];
 
-  const impactColor = (impact: TimelineEvent["impact"]) => {
-    switch (impact) {
-      case "strong":
-        return "bg-emerald-500";
-      case "positive":
-        return "bg-indigo-500";
-      case "risk":
-        return "bg-rose-500";
-      default:
-        return "bg-slate-400";
+  const themeClass = useMemo(() => {
+    if (effectiveContext === "business") {
+      return "bg-gradient-to-br from-[#f6f8fc] via-[#eef2f9] to-[#e8edf6]";
     }
-  };
-
-  const momentumIndicator = () => {
-    if (current.momentum === "up") {
-      return (
-        <div className="flex items-center gap-2 text-xs font-medium text-emerald-600">
-          <ArrowUpRight size={14} /> Momentum Increasing
-        </div>
-      );
+    if (effectiveContext === "human") {
+      return "bg-gradient-to-br from-[#faf5ff] via-[#f3e8ff] to-[#ede9fe]";
     }
+    return "bg-gradient-to-br from-[#fef9f3] via-[#fef3c7] to-[#fde68a]";
+  }, [effectiveContext]);
 
-    return (
-      <div className="flex items-center gap-2 text-xs font-medium text-rose-600">
-        <ArrowDownRight size={14} /> Momentum Decreasing
-      </div>
-    );
-  };
-
-  const riskIndicator = () => {
-    if (current.riskLevel === "low") return null;
-
-    return (
-      <div className="flex items-center gap-2 text-xs font-medium text-rose-600">
-        <AlertTriangle size={14} /> Risk detected
-      </div>
-    );
+  const highlightBody = (text: string) => {
+    if (effectiveContext === "business") {
+      return text
+        .replace("move forward", "🟢 move forward")
+        .replace("pending final pricing validation", "⚠️ pending final pricing validation");
+    }
+    if (effectiveContext === "human") {
+      return `💬 Tone detected: Direct / Low emotion\n\n${text}`;
+    }
+    return `⚖️ Mixed Context Detected\n\n${text}`;
   };
 
   return (
@@ -131,7 +115,7 @@ export default function OliviaOne() {
         x.set(event.clientX - rect.width / 2);
         y.set(event.clientY - rect.height / 2);
       }}
-      className="h-screen overflow-hidden bg-gradient-to-br from-[#f6f8fc] via-[#eef2f9] to-[#e8edf6] text-[#0f172a]"
+      className={`h-screen overflow-hidden ${themeClass} text-[#0f172a]`}
     >
       <div className="flex items-center justify-between border-b border-white/40 bg-white/50 px-10 py-6 shadow-[0_20px_60px_rgba(0,0,0,0.08)] backdrop-blur-3xl">
         <div>
@@ -141,12 +125,30 @@ export default function OliviaOne() {
           </div>
         </div>
 
-        <button
-          onClick={() => setFocusMode(!focusMode)}
-          className="rounded-full bg-white/70 px-6 py-2 text-xs shadow-md backdrop-blur transition-all duration-500 hover:shadow-xl"
-        >
-          {focusMode ? "Exit Focus" : "Ultra Focus"}
-        </button>
+        <div className="flex items-center gap-4">
+          <div className="flex gap-2 text-xs">
+            {(["business", "human", "mixed"] as const).map((mode) => (
+              <button
+                key={mode}
+                onClick={() => setManualOverride(manualOverride === mode ? null : mode)}
+                className={`rounded-full px-3 py-1 transition-all ${
+                  effectiveContext === mode
+                    ? "bg-indigo-600 text-white"
+                    : "bg-white/70 text-slate-600"
+                }`}
+              >
+                {mode}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => setFocusMode(!focusMode)}
+            className="rounded-full bg-white/70 px-6 py-2 text-xs shadow-md backdrop-blur transition-all duration-500 hover:shadow-xl"
+          >
+            {focusMode ? "Exit Focus" : "Ultra Focus"}
+          </button>
+        </div>
       </div>
 
       <div className="flex h-[calc(100vh-88px)]">
@@ -177,7 +179,7 @@ export default function OliviaOne() {
         <motion.div
           layout
           style={{ rotateX, rotateY }}
-          className="flex-1 border-r border-white/40 bg-white/60 px-16 py-14 shadow-[0_40px_100px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
+          className="flex-1 whitespace-pre-line border-r border-white/40 bg-white/60 px-16 py-14 shadow-[0_40px_100px_rgba(0,0,0,0.08)] backdrop-blur-2xl"
         >
           <div className="mb-6 text-4xl font-semibold tracking-tight">
             {current.subject}
@@ -186,7 +188,7 @@ export default function OliviaOne() {
             {current.from} • {current.company}
           </div>
           <div className="max-w-3xl text-lg leading-relaxed text-slate-700">
-            {current.body}
+            {highlightBody(current.body)}
           </div>
         </motion.div>
 
@@ -194,32 +196,46 @@ export default function OliviaOne() {
           style={{ rotateX, rotateY }}
           className="w-[460px] overflow-y-auto bg-white/60 px-12 py-14 shadow-[0_50px_120px_rgba(0,0,0,0.1)] backdrop-blur-3xl"
         >
-          <div className="space-y-14">
-            <div>
-              <div className="mb-4 flex items-center gap-3 text-sm font-medium">
-                <TrendingUp size={16} /> Revenue Engine
+          <div className="space-y-12">
+            {effectiveContext !== "human" && (
+              <div>
+                <div className="mb-4 flex items-center gap-3 text-sm font-medium">
+                  <TrendingUp size={16} /> Revenue Engine
+                </div>
+                <div className="text-sm text-slate-600">
+                  Probability{" "}
+                  <span className="font-semibold text-indigo-600">
+                    {current.revenueScore}%
+                  </span>
+                </div>
+                <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-600">
+                  <ArrowUpRight size={14} /> Momentum Increasing
+                </div>
+                <div className="mt-2 flex items-center gap-2 text-xs font-medium text-rose-600">
+                  <AlertTriangle size={14} /> Risk detected
+                </div>
               </div>
-              <div className="text-sm text-slate-600">
-                Probability{" "}
-                <span className="font-semibold text-indigo-600">
-                  {current.revenueScore}%
-                </span>
+            )}
+
+            {effectiveContext !== "business" && (
+              <div>
+                <div className="mb-4 flex items-center gap-3 text-sm font-medium">
+                  <Users size={16} /> Human Signal
+                </div>
+                <div className="text-sm text-slate-600">
+                  Tone: {current.userProfile.tone}
+                </div>
+                <div className="text-sm text-slate-600">
+                  Relationship: {current.userProfile.relationshipScore}/100
+                </div>
               </div>
-              <div className="mt-2 text-sm text-slate-600">
-                Value{" "}
-                <span className="font-semibold">
-                  ${current.revenueValue.toLocaleString()}
-                </span>
-              </div>
-              <div className="mt-4">{momentumIndicator()}</div>
-              <div className="mt-2">{riskIndicator()}</div>
-            </div>
+            )}
 
             <div>
               <div className="mb-6 flex items-center gap-3 text-sm font-medium">
-                <Activity size={16} /> Relationship Score Evolution
+                <Activity size={16} /> Evolution
               </div>
-              <div className="flex h-32 items-end gap-4">
+              <div className="flex h-28 items-end gap-4">
                 {current.scoreEvolution.map((score, index) => (
                   <motion.div
                     key={index}
@@ -229,56 +245,6 @@ export default function OliviaOne() {
                     className="w-6 rounded-2xl bg-gradient-to-t from-indigo-500 to-indigo-300 shadow-xl"
                   />
                 ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-6 text-sm font-medium">Relationship Timeline</div>
-              <div className="relative space-y-6 border-l border-slate-300 pl-6">
-                {current.timeline.map((event, index) => (
-                  <div key={index} className="relative">
-                    <span
-                      className={`absolute top-1 -left-[33px] h-4 w-4 rounded-full ${impactColor(
-                        event.impact,
-                      )}`}
-                    />
-                    <div className="text-sm font-medium">{event.label}</div>
-                    <div className="text-xs text-slate-500">{event.detail}</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <div className="mb-4 flex items-center gap-3 text-sm font-medium">
-                <BrainCircuit size={16} /> Enterprise Intelligence
-              </div>
-              <ul className="space-y-2 text-sm text-slate-600">
-                {current.enterprise.map((item) => (
-                  <li key={item}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <div className="mb-4 flex items-center gap-3 text-sm font-medium">
-                <Users size={16} /> User Intelligence
-              </div>
-              <div className="text-sm text-slate-600">
-                Role: <span className="font-semibold">{current.userProfile.role}</span>
-              </div>
-              <div className="text-sm text-slate-600">
-                Authority:{" "}
-                <span className="font-semibold">{current.userProfile.authority}</span>
-              </div>
-              <div className="text-sm text-slate-600">
-                Tone: <span className="font-semibold">{current.userProfile.tone}</span>
-              </div>
-              <div className="text-sm text-slate-600">
-                Relationship Score:{" "}
-                <span className="font-semibold">
-                  {current.userProfile.relationshipScore}/100
-                </span>
               </div>
             </div>
           </div>
