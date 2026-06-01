@@ -1,9 +1,70 @@
 "use client";
 
 import React from "react";
-import { Activity, ArrowRight, Brain, Shield } from "lucide-react";
+
+type MailPreview = {
+  id: number;
+  from: string;
+  subject: string;
+  type: string;
+  score: number;
+};
+
+const initialMails: MailPreview[] = [
+  {
+    id: 1,
+    from: "Enterprise Client",
+    subject: "Contract discussion follow-up",
+    type: "Business",
+    score: 74,
+  },
+  {
+    id: 2,
+    from: "Long-term Partner",
+    subject: "Concern about collaboration rhythm",
+    type: "Human",
+    score: 58,
+  },
+];
+
+const eventsSeed = [
+  "New high-intent email detected",
+  "Relationship momentum increasing",
+  "Human friction signal detected",
+  "Opportunity probability updated",
+  "New inbound interaction (Hostess)",
+];
 
 export default function OliviaControlCenter() {
+  const [mails, setMails] = React.useState<MailPreview[]>(initialMails);
+  const [liveFeed, setLiveFeed] = React.useState<string[]>([]);
+  const [globalScore, setGlobalScore] = React.useState(87);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      const newMail: MailPreview = {
+        id: Date.now(),
+        from: "New Contact",
+        subject: "Dynamic incoming interaction",
+        type: Math.random() > 0.5 ? "Business" : "Human",
+        score: Math.floor(Math.random() * 40) + 50,
+      };
+
+      setMails((prev) => [newMail, ...prev.slice(0, 5)]);
+
+      const newEvent =
+        eventsSeed[Math.floor(Math.random() * eventsSeed.length)];
+
+      setLiveFeed((prev) => [newEvent, ...prev.slice(0, 5)]);
+
+      setGlobalScore((prev) =>
+        Math.min(100, Math.max(55, prev + (Math.random() > 0.5 ? 1 : -1))),
+      );
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-black">
       <div className="pointer-events-none absolute inset-0">
@@ -22,59 +83,59 @@ export default function OliviaControlCenter() {
         </div>
       </section>
 
-      <section className="relative px-6 py-20 lg:px-16 lg:py-28">
-        <div className="mx-auto max-w-6xl">
-          <div className="rounded-[32px] border border-gray-200 bg-white p-8 shadow-[0_40px_120px_rgba(0,0,0,0.08)] lg:rounded-[40px] lg:p-14">
-            <div className="mb-6 text-sm tracking-wide text-gray-400 uppercase">
-              Live Cognitive Engine
+      <section className="relative px-6 py-20 lg:px-16 lg:py-24">
+        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3 lg:gap-12">
+          <div className="rounded-[32px] border border-gray-200 bg-white p-8 shadow-xl lg:rounded-[40px] lg:p-12">
+            <div className="mb-4 text-sm text-gray-400 uppercase">
+              Global Relationship Index
             </div>
-            <div className="mb-10 text-3xl font-semibold lg:text-4xl">
-              87% Relationship Score
+            <div className="text-5xl font-semibold text-[#FF2F7D] transition-all duration-500">
+              {globalScore}%
             </div>
-            <div className="space-y-4 text-base">
-              <Metric label="Momentum Increasing" value="+12%" accent />
-              <Metric label="Human Engagement" value="Strong" />
-              <Metric label="Risk Level" value="Moderate" muted />
+            <div className="mt-6 space-y-2 text-sm">
+              <div>Business Momentum: +12%</div>
+              <div>Human Trust Level: Strong</div>
+              <div>Risk Exposure: Moderate</div>
+            </div>
+          </div>
+
+          <div className="rounded-[32px] border border-gray-200 bg-white p-8 shadow-xl lg:rounded-[40px] lg:p-12">
+            <div className="mb-6 text-sm text-gray-400 uppercase">
+              Live Intelligence Feed
+            </div>
+            <div className="space-y-3 text-sm">
+              {liveFeed.map((event, index) => (
+                <div
+                  key={`${event}-${index}`}
+                  className="animate-pulse border-l-4 border-[#FF2F7D] py-2 pl-4"
+                >
+                  {event}
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[32px] border border-gray-200 bg-white p-8 shadow-xl lg:rounded-[40px] lg:p-12">
+            <div className="mb-6 text-sm text-gray-400 uppercase">
+              Olivia One Inbox (Live)
+            </div>
+            <div className="space-y-4 text-sm">
+              {mails.map((mail) => (
+                <div
+                  key={mail.id}
+                  className="border-b border-gray-100 pb-3 transition-all duration-300"
+                >
+                  <div className="flex justify-between gap-4">
+                    <span className="font-medium">{mail.from}</span>
+                    <span className="text-[#FF2F7D]">{mail.score}%</span>
+                  </div>
+                  <div className="text-gray-500">{mail.subject}</div>
+                  <div className="mt-1 text-xs text-gray-400">{mail.type}</div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
-      </section>
-
-      <section className="bg-[#F9F9FB] px-6 py-24 lg:px-16 lg:py-32">
-        <div className="mx-auto mb-16 max-w-7xl text-center lg:mb-20">
-          <h2 className="text-4xl font-semibold lg:text-5xl">
-            Modular Intelligence Architecture
-          </h2>
-        </div>
-        <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-3 lg:gap-16">
-          <Card
-            icon={<Activity size={32} />}
-            title="Olivia Hostess"
-            description="Captures and qualifies incoming interactions in real time."
-          />
-          <Card
-            icon={<Brain size={32} />}
-            title="Olivia One"
-            description="Builds relational memory and extracts strategic signals."
-          />
-          <Card
-            icon={<Shield size={32} />}
-            title="o7 CRM Pulse"
-            description="Transforms signals into structured revenue execution."
-          />
-        </div>
-      </section>
-
-      <section className="bg-black px-6 py-28 text-center text-white lg:px-16 lg:py-36">
-        <h2 className="mb-10 text-4xl font-semibold lg:text-5xl">
-          The Relationship Operating System
-        </h2>
-        <p className="mx-auto mb-16 max-w-3xl text-lg text-gray-400 lg:text-xl">
-          Not just AI. Not just CRM. A strategic relational infrastructure layer.
-        </p>
-        <button className="inline-flex items-center gap-3 rounded-full bg-[#FF2F7D] px-10 py-5 text-lg font-medium text-white transition-all hover:opacity-90 lg:px-14 lg:py-7 lg:text-xl">
-          Enter Olivia One <ArrowRight size={20} />
-        </button>
       </section>
     </div>
   );
@@ -198,43 +259,6 @@ function HeroSlider() {
         />
       ))}
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-black/10" />
-    </div>
-  );
-}
-
-function Metric({
-  label,
-  value,
-  accent = false,
-  muted = false,
-}: {
-  label: string;
-  value: string;
-  accent?: boolean;
-  muted?: boolean;
-}) {
-  return (
-    <div className="flex justify-between gap-4">
-      <span className={accent ? "text-[#FF2F7D]" : ""}>{label}</span>
-      <span className={`font-medium ${muted ? "text-gray-500" : ""}`}>{value}</span>
-    </div>
-  );
-}
-
-function Card({
-  icon,
-  title,
-  description,
-}: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-}) {
-  return (
-    <div className="rounded-[32px] border border-gray-200 bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.06)] transition-all hover:shadow-[0_30px_90px_rgba(0,0,0,0.1)] lg:rounded-[40px] lg:p-12">
-      <div className="mb-8 text-[#FF2F7D]">{icon}</div>
-      <h3 className="mb-6 text-2xl font-semibold">{title}</h3>
-      <p className="leading-relaxed text-gray-500">{description}</p>
     </div>
   );
 }
