@@ -1,7 +1,8 @@
 "use client";
 
 import React from "react";
-import { Activity, ArrowRight, Brain, Shield } from "lucide-react";
+import { Activity, Brain, Shield } from "lucide-react";
+import EnterOliviaButton from "@/components/EnterOliviaButton";
 
 export default function OliviaControlCenter() {
   const [globalScore, setGlobalScore] = React.useState(87);
@@ -87,9 +88,7 @@ export default function OliviaControlCenter() {
         <p className="mx-auto mb-16 max-w-3xl text-lg text-gray-400 lg:text-xl">
           Not just AI. Not just CRM. A strategic relational infrastructure layer.
         </p>
-        <button className="inline-flex items-center gap-3 rounded-full bg-[#FF2F7D] px-10 py-5 text-lg font-medium text-white transition-all hover:opacity-90 lg:px-14 lg:py-7 lg:text-xl">
-          Enter Olivia One <ArrowRight size={20} />
-        </button>
+        <EnterOliviaButton />
       </section>
     </div>
   );
