@@ -11,7 +11,7 @@ export default function EnterOliviaButton() {
     setBooting(true);
 
     setTimeout(() => {
-      router.push("/inbox");
+      router.push("/control");
     }, 2200);
   };
 
