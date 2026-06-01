@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useMotionValue, useTransform } from "framer-motion";
 import {
   TrendingUp,
@@ -87,7 +87,7 @@ export default function OliviaOne() {
   const rotateX = useTransform(y, [-200, 200], [4, -4]);
   const rotateY = useTransform(x, [-200, 200], [-4, 4]);
 
-  const mails: MailItem[] = [
+  const [mails, setMails] = useState<MailItem[]>([
     {
       from: "Andrew Miller",
       company: "Enterprise Corp",
@@ -117,7 +117,99 @@ export default function OliviaOne() {
         relationshipScore: 78,
       },
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    const names = [
+      "Sophia Laurent",
+      "David Kim",
+      "Maria Ortega",
+      "Liam Foster",
+      "Nina Patel",
+      "Oliver Grant",
+    ];
+    const companies = [
+      "NorthPeak Retail",
+      "Atlas Mobility",
+      "BlueForge Tech",
+      "Summit Health",
+      "Aster Finance",
+      "Zenith Foods",
+    ];
+    const businessSubjects = [
+      "Budget alignment for enterprise rollout",
+      "Renewal negotiation and commercial terms",
+      "Board review requested for expansion",
+    ];
+    const humanSubjects = [
+      "Team frustration around onboarding pace",
+      "Need support for internal adoption",
+      "Escalation risk from key stakeholder",
+    ];
+
+    const interval = setInterval(() => {
+      const business = Math.random() > 0.45;
+      const subjectPool = business ? businessSubjects : humanSubjects;
+      const subject = subjectPool[Math.floor(Math.random() * subjectPool.length)];
+      const from = names[Math.floor(Math.random() * names.length)];
+      const company = companies[Math.floor(Math.random() * companies.length)];
+      const baseScore = business ? 68 : 58;
+      const revenueScore = Math.min(95, baseScore + Math.floor(Math.random() * 20));
+      const relationshipScore = Math.min(
+        94,
+        55 + Math.floor(Math.random() * 35),
+      );
+      const riskLevel: MailItem["riskLevel"] =
+        revenueScore > 80 ? "low" : revenueScore > 68 ? "medium" : "high";
+
+      const now = new Date();
+      const date = `${String(now.getHours()).padStart(2, "0")}:${String(
+        now.getMinutes(),
+      ).padStart(2, "0")}`;
+
+      const newMail: MailItem = {
+        from,
+        company,
+        subject,
+        body: business
+          ? "We are prepared to move quickly if pricing and legal checkpoints are aligned this week."
+          : "Our team is positive overall, but we are seeing adoption friction and need a clearer support plan.",
+        date,
+        revenueScore,
+        revenueValue: 60000 + Math.floor(Math.random() * 180000),
+        momentum: Math.random() > 0.35 ? "up" : "down",
+        riskLevel,
+        scoreEvolution: Array.from({ length: 5 }, (_, idx) =>
+          Math.min(95, Math.max(35, revenueScore - 18 + idx * 5 + Math.floor(Math.random() * 7))),
+        ),
+        timeline: [
+          { label: "Inbound received", detail: subject, impact: "neutral" },
+          {
+            label: business ? "Buying intent detected" : "Human friction detected",
+            detail: business ? "Commercial momentum up" : "Executive confidence at risk",
+            impact: business ? "positive" : "risk",
+          },
+          { label: "Signal enriched", detail: "Cross-team context mapped", impact: "strong" },
+        ],
+        enterprise: [
+          `${company}: stakeholder map updated`,
+          business ? "Finance and procurement aligned" : "HR and operations need enablement",
+          "Recommended next step generated",
+        ],
+        userProfile: {
+          role: business ? "Commercial Leader" : "Operations Sponsor",
+          authority: business ? "Budget Owner" : "Influencer",
+          tone: business ? "Direct / ROI-driven" : "Concerned / Collaborative",
+          relationshipScore,
+        },
+      };
+
+      setMails((prev) => [newMail, ...prev].slice(0, 8));
+      setSelectedMail(0);
+    }, 6500);
+
+    return () => clearInterval(interval);
+  }, []);
 
   const current = mails[selectedMail];
 

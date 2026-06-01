@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import { Activity, Brain, Shield } from "lucide-react";
 import EnterOliviaButton from "@/components/EnterOliviaButton";
 
@@ -72,6 +73,7 @@ export default function OliviaControlCenter() {
             icon={<Brain size={32} />}
             title="Olivia One"
             description="Builds relational memory and extracts strategic signals."
+            link="/inbox"
           />
           <Card
             icon={<Shield size={32} />}
@@ -239,16 +241,26 @@ function Card({
   icon,
   title,
   description,
+  link,
 }: {
   icon: React.ReactNode;
   title: string;
   description: string;
+  link?: string;
 }) {
-  return (
+  const content = (
     <div className="rounded-[32px] border border-gray-200 bg-white p-8 shadow-[0_20px_60px_rgba(0,0,0,0.06)] transition-all hover:shadow-[0_30px_90px_rgba(0,0,0,0.1)] lg:rounded-[40px] lg:p-12">
       <div className="mb-8 text-[#FF2F7D]">{icon}</div>
       <h3 className="mb-6 text-2xl font-semibold">{title}</h3>
       <p className="leading-relaxed text-gray-500">{description}</p>
     </div>
+  );
+
+  if (!link) return content;
+
+  return (
+    <Link href={link} className="block">
+      {content}
+    </Link>
   );
 }
