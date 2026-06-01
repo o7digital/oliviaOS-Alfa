@@ -4,6 +4,18 @@ import React from "react";
 import { Activity, ArrowRight, Brain, Shield } from "lucide-react";
 
 export default function OliviaControlCenter() {
+  const [globalScore, setGlobalScore] = React.useState(87);
+
+  React.useEffect(() => {
+    const interval = setInterval(() => {
+      setGlobalScore((previous) =>
+        Math.min(100, Math.max(60, previous + (Math.random() > 0.5 ? 1 : -1))),
+      );
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
     <div className="relative min-h-screen overflow-hidden bg-white text-black">
       <div className="pointer-events-none absolute inset-0">
@@ -27,9 +39,12 @@ export default function OliviaControlCenter() {
           <div className="rounded-[32px] border border-gray-200 bg-white p-8 shadow-[0_40px_120px_rgba(0,0,0,0.08)] lg:rounded-[40px] lg:p-14">
             <div className="mb-6 text-sm tracking-wide text-gray-400 uppercase">
               Live Cognitive Engine
+              <span className="ml-2 animate-pulse text-[#FF2F7D]">
+                ● LIVE
+              </span>
             </div>
             <div className="mb-10 text-3xl font-semibold lg:text-4xl">
-              87% Relationship Score
+              {globalScore}% Relationship Score
             </div>
             <div className="space-y-4 text-base">
               <Metric label="Momentum Increasing" value="+12%" accent />
